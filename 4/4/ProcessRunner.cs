@@ -16,6 +16,7 @@ public class ProcessRunner : IProcessRunner
     public async Task Run()
     {
         var boards = (await fileService.GetBoardNumbersAsync()).Select(boardMakerService.Make).ToList() ;
+        var finishedBoards = new List<Board>();
         var numbers = await fileService.GetNumbersAsync();
         foreach (var number in numbers)
         {
@@ -23,11 +24,11 @@ public class ProcessRunner : IProcessRunner
             {
                 boardCheckingService.MarkBoard(number, board);
                 var result = boardCheckingService.CheckBoard(board);
-                if (result)
+                if (result && !finishedBoards.Contains(board))
                 {
                     var points = boardCheckingService.CountPoints(board, int.Parse(number));
                     Console.WriteLine(points);
-                    return;
+                    finishedBoards.Add(board);
                 }
             }
             
