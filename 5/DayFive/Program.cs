@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using _4;
+global using DayFive.Interfaces;
+global using DayFive.Services;
+
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
@@ -9,10 +11,10 @@ sw.Start();
 Console.WriteLine("Hello, World!");
 using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
-        services.AddTransient<IFileService, FileService>()
-        .AddTransient<IProcessRunner, ProcessRunner>()
-        .AddTransient<IBoardCheckingService, BoardCheckingService>()
-        .AddTransient<IBoardMakerService, BoardMakerService>()
+        services.AddTransient<IProcessRunner, ProcessRunner>()
+        .AddTransient<IInputService, InputService>()
+        .AddTransient<ICoordinateService, CoordinateService>()
+        .AddTransient<IGridMarkerService, GridMarkerService>()
         ).Build();
 var runner = host.Services.GetService<IProcessRunner>();
 await runner.Run();
