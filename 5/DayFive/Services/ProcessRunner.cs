@@ -1,4 +1,5 @@
-﻿using DayFive.Interfaces;
+﻿using DayFive.Domain;
+using DayFive.Interfaces;
 
 namespace DayFive.Services;
 

@@ -1,13 +1,15 @@
 using DayFive.Services;
 using Xunit;
 using System.Linq;
+using DayFive.Domain;
+
 namespace TestProject1
 {
-    public class UnitTest1
+    public class CoordinateServiceTests
     {
         private CoordinateService _service;
 
-        public UnitTest1()
+        public CoordinateServiceTests()
         {
             _service = new CoordinateService();
         }

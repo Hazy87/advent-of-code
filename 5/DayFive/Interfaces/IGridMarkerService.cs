@@ -1,4 +1,6 @@
-﻿namespace DayFive.Interfaces;
+﻿using DayFive.Domain;
+
+namespace DayFive.Interfaces;
 
 public interface IGridMarkerService
 {

@@ -1,4 +1,4 @@
-﻿namespace DayFive.Services
+﻿namespace DayFive.Domain
 {
     public class Grid
     {
