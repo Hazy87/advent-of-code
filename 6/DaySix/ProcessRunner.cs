@@ -1,4 +1,6 @@
-﻿public class ProcessRunner : IProcessRunner
+﻿using System.Collections.Concurrent;
+
+public class ProcessRunner : IProcessRunner
 {
     private readonly IInputService _inputService;
     private readonly IFishProcessService _fishProcessService;
@@ -12,40 +14,22 @@
     public async Task Run(int days)
     {
         var originalFish = (await _inputService.GetLaternFish()).ToList();
-        var count = 0;
-        var oldFishCounter = 0;
-        /*foreach (var lanternFish in originalFish)
-        {
-            count += NewMethod(days, new List<LanternFish>(){ lanternFish }, oldFishCounter, originalFish.Count);
-            oldFishCounter++;
-        }*/
-
+        var concurrentDictionary = new ConcurrentDictionary<int, long>();
+        foreach (var fish in originalFish.DistinctBy(x => x))
+            concurrentDictionary[fish] =  0;
         var fishCounter = originalFish.Count;
-        Parallel.ForEach(originalFish, new ParallelOptions { MaxDegreeOfParallelism = 24 }, lanternFish =>
+        /*foreach (var concurrentDictionaryKey in concurrentDictionary.Keys)
         {
-            count++;
-            Console.WriteLine($"Processing {count} of {fishCounter} parents");
+
+            var localFishCounter = _fishProcessService.CountFishChildren(concurrentDictionaryKey, days);
+            concurrentDictionary[concurrentDictionaryKey] = localFishCounter + 1;
+        }*/
+        Parallel.ForEach(concurrentDictionary.Keys, new ParallelOptions { MaxDegreeOfParallelism = 5 }, lanternFish =>
+        {
             var localFishCounter = _fishProcessService.CountFishChildren(lanternFish, days);
-            Interlocked.Add(ref fishCounter, localFishCounter);
-            Console.WriteLine($"Finished processing {count} of {fishCounter} parents");
-
+            concurrentDictionary[lanternFish] = localFishCounter + 1;
         });
-        Console.WriteLine($"New {fishCounter}");
-        Console.WriteLine($"Total {count}");
-
-    }
-
-    private int NewMethod(int days, List<LanternFish> originalFish, int counter, int fishCounter)
-    {
-        for (var i = 0; i <= days - 1; i++)
-        {
-            _fishProcessService.Process(originalFish);
-            //Console.WriteLine($"Calculated day {i} so far got {originalFish.Count} for fish {counter}/{fishCounter}");
-            Console.WriteLine(string.Join(",", originalFish.Select(x => x.SpawnTimer)));
-
-        }
-
-        Console.WriteLine(string.Join(",", originalFish.Select(x => x.SpawnTimer)));
-        return originalFish.Count;
+        
+        Console.WriteLine($"Really New {originalFish.Select(x => concurrentDictionary[x]).Sum()}");
     }
 }

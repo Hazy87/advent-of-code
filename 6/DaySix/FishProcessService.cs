@@ -3,44 +3,55 @@
 public class FishProcessService : IFishProcessService
 {
     
+    public static ConcurrentDictionary<(int spawnTimer, int days), long> RainbowTable = new();
 
-    public int CountFishChildren(LanternFish fish, int days)
+    public long CountFishChildren(int spawnTimer, int days)
     {
-        var counter = 0;
-        var fishCounter = 0;
-        for (int i = 1; i < days+1; i++)
+        if (RainbowTable.ContainsKey((spawnTimer, days)))
+            return RainbowTable[(spawnTimer, days)];
+        long fishCounter = 0;
+        for (var i = 1; i < days + 1; i++)
         {
-            if (fish.SpawnTimer > days)
+            if (spawnTimer > days)
                 return fishCounter;
-            if (fish.SpawnTimer == 0)
+            if (spawnTimer == 0)
             {
-                fishCounter += CountFishChildren(new LanternFish { SpawnTimer = 8 }, days - i);
+                fishCounter += CountFishChildren(8, days - i);
                 fishCounter++;
-                fish.SpawnTimer = 6;
+                spawnTimer = 6;
+                RainbowTable[(spawnTimer, days)] = fishCounter;
             }
             else
             {
-                fish.SpawnTimer--;
+                spawnTimer--;
             }
         }
+
         return fishCounter;
     }
 
-    public void Process(List<LanternFish> fish)
+    public long CountFishChildrenParral(int spawnTimer, int days)
     {
-        var newlySpawned = new ConcurrentBag<LanternFish>();
-        Parallel.ForEach(fish, new ParallelOptions { MaxDegreeOfParallelism = 2000 }, lanternFish =>
+        if (RainbowTable.ContainsKey((spawnTimer, days)))
+            return RainbowTable[(spawnTimer, days)];
+        long fishCounter = 0;
+        for (var i = 1; i < days + 1; i++)
         {
-            if (lanternFish.SpawnTimer == 0)
+            if (spawnTimer > days)
+                return fishCounter;
+            if (spawnTimer == 0)
             {
-                newlySpawned.Add(new LanternFish());
-                lanternFish.SpawnTimer = 6;
-                return;
+                fishCounter += CountFishChildren(8, days - i);
+                fishCounter++;
+                spawnTimer = 6;
+                RainbowTable[(spawnTimer, days)] = fishCounter;
             }
+            else
+            {
+                spawnTimer--;
+            }
+        }
 
-            lanternFish.SpawnTimer--;
-        });
-
-        fish.AddRange(newlySpawned);
+        return fishCounter;
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
 Stopwatch sw = new Stopwatch();
-sw.Start();
 Console.WriteLine("Hello, World!");
 using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
@@ -12,6 +11,8 @@ using IHost host = Host.CreateDefaultBuilder(args)
         .AddSingleton<IFishProcessService, FishProcessService>()
     ).Build();
 var runner = host.Services.GetService<IProcessRunner>();
+
+sw.Start();
 await runner.Run(256);
 sw.Stop();
 Console.WriteLine("time" + sw.ElapsedMilliseconds.ToString());
