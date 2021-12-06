@@ -1,4 +1,5 @@
 ﻿public interface IFishProcessService
 {
-    void Process(List<LanternFish> fish);
+    int CountFishChildren(LanternFish fish, int days);
+    void Process(List<LanternFish> originalFish);
 }
