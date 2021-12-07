@@ -14,7 +14,7 @@ public class ProcessRunner : IProcessRunner
     public async Task Run()
     {
         var postitions = await _inputService.GetPositions();
-        var minFuel= _fuelCalculatorService.GetMinimumFuelRequired(postitions.ToArray());
+        var minFuel= _fuelCalculatorService.GetMinimumFuelRequiredFuelRates(postitions.ToArray());
         Console.WriteLine(minFuel);
     }
 }

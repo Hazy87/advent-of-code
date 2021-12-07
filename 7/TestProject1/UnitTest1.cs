@@ -23,5 +23,25 @@ namespace TestProject1
             var minNumber = _service.GetMinimumFuelRequired(crabPositions.ToArray());
             Assert.AreEqual(37, minNumber);
         }
+
+        [Theory]
+        [InlineData("16,1,2,0,4,2,7,1,2,14")]
+        public void GetMinimumFuelRequiredFuelRates(string positions)
+        {
+            var crabPositions = positions.Split(",").Select(x => int.Parse(x));
+            var minNumber = _service.GetMinimumFuelRequiredFuelRates(crabPositions.ToArray());
+            Assert.AreEqual(168, minNumber);
+        }
+
+        [Theory]
+        [InlineData(1,2,1)]
+        [InlineData(1,3,3)]
+        [InlineData(1,4,6)]
+        [InlineData(4,1,6)]
+        public void GetFuelRate(int oldPosition, int newPosition, int expectedValue)
+        {
+            var minNumber = _service.GetFuelRate(oldPosition, newPosition);
+            Assert.AreEqual(expectedValue, minNumber);
+        }
     }
 }
