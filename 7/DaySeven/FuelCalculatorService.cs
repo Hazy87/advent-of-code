@@ -25,18 +25,21 @@
     {
         var orderedList = postitions.OrderBy(x => x);
         var minFuelCounter = int.MaxValue;
-        for (int newPosition = 0; newPosition < orderedList.Max(); newPosition++)
+        Parallel.For(0, orderedList.Max(), newPosition =>
         {
             var totalFuelCounter = 0;
             foreach (var oldPosition in orderedList)
             {
-                var difference = GetFuelRate(oldPosition,newPosition);
+                var difference = GetFuelRate(oldPosition, newPosition);
 
                 totalFuelCounter += difference;
             }
+
+            if (totalFuelCounter > minFuelCounter)
+                return;
             if (totalFuelCounter < minFuelCounter)
                 minFuelCounter = totalFuelCounter;
-        }
+        });
 
         return minFuelCounter;
     }
