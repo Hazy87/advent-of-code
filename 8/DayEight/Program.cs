@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿global using DayEight.Interfaces;
+global using DayEight.Services;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
@@ -7,8 +9,9 @@ Console.WriteLine("Hello, World!");
 using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
         services.AddSingleton<IProcessRunner, ProcessRunner>()
+            .AddSingleton<IDecodeService, DecodeService>()
         .AddSingleton<IInputService, InputService>()
-        .AddSingleton<ICounterService, CounterService>()
+        .AddSingleton<INumberFindingService, NumberFindingService>()
     ).Build();
 var runner = host.Services.GetService<IProcessRunner>();
 

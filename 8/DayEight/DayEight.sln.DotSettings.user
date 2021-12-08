@@ -1,0 +1,16 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=80099813_002Dd676_002D4ae9_002D9824_002D37def3045da2/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="FindTop" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests.FindTop&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests.FindTopLeft&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests.FindTopRight&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests.FindBottomRight&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests.FindBottomLeft&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests.FindMiddle&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests.FindBottomLeftList&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests.FindTopRightList&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests.SplitSixNineZero&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8B81E2BF-D953-4558-A880-485E0E0439EE::net6.0::TestProject1.SegmentFinderTests.SplitTwoThreeFive&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
