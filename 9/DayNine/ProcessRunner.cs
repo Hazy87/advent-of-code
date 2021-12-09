@@ -15,13 +15,10 @@ public class ProcessRunner : IProcessRunner
     public async Task Run()
     {
         var lines = (await _inputService.GetLines()).ToList();
-        var totalRiskPoints = 0;
-        for (var i = 0; i < lines.Count()-2; i++)
-        {
-            var riskPoints = _riskPointFinderService.FindRiskPoints(lines[i], lines[i+1], lines[i+2]);
-            totalRiskPoints += riskPoints.Sum();
-        }
+        var basinSizes = _riskPointFinderService.BasinFinder(lines);
+        var starter = 1;
+        basinSizes.ForEach(x => starter = x * starter);
 
-        Console.WriteLine($"done {totalRiskPoints}");
+        Console.WriteLine($"done {starter}");
     }
 }
