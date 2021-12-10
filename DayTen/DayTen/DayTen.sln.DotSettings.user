@@ -2,5 +2,8 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=6850d7e8_002D2b8e_002D47de_002D907f_002D26766bf34a9a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CorruptionFinder_Should_Return_Correct_Char" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::40893A41-78D7-46FF-9731-39314D1180A7::net6.0::DayTen.Tests.CorruptionFinderTests.CorruptionFinder_Should_Return_Correct_Char&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::40893A41-78D7-46FF-9731-39314D1180A7::net6.0::DayTen.Tests.CorruptionFinderTests.IsCorruptShouldReturnCorrectResult&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::40893A41-78D7-46FF-9731-39314D1180A7::net6.0::DayTen.Tests.CorruptionFinderTests.AutCompleteShouldReturnCorrectResult&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::40893A41-78D7-46FF-9731-39314D1180A7::net6.0::DayTen.Tests.CorruptionFinderTests.AutoCompleteScoreShouldReturnCorrectResult&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
