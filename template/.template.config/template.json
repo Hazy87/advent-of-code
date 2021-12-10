@@ -1,0 +1,10 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Alex Hole",
+    "classifications": [ "Web" ],
+    "identity": "Template",
+    "name": "Template to for advent of code 2021.",
+    "shortName": "Advent-of-code-template",
+    "sourceName": "Template",
+    "preferNameDirectory": true
+  }
