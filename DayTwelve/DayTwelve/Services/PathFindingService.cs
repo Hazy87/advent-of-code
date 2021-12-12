@@ -14,45 +14,33 @@ public class PathFindingService : IPathFindingService
             paths.Add(path);
         }
 
-        var list = paths.Where(x => x.Segments.LastOrDefault() == "end").ToList(); 
-        PrintBoard(list);
-
-        list = list.Where(x => x.Segments.Where(a => a.ToUpper() != a).GroupBy(y => y).Count(z => z.Count() > 1) <= 1).ToList();
-        return list;
-    }
-    private static void PrintBoard(List<Path> Paths)
-    {
-        foreach (var pathGroup in Paths)
-        {
-            Console.WriteLine(string.Join("-", pathGroup.Segments));
-
-        }
-        Console.WriteLine($"");
-        Console.WriteLine($"");
-
+        return  paths.Where(x => x.Segments.LastOrDefault() == "end").ToList();
     }
     private void Traverse(List<CaveConnections> caveConnections, string lastPoint, Path path)
     {
+        //Find places to move which I didnt just come from.
         var possibleMoves = caveConnections.Where(x => x.PointA == lastPoint || x.PointB == lastPoint);
+
+        //Only 1 way to go 
         if (possibleMoves.Count() == 1)
         {
             var firstOrDefault = possibleMoves.FirstOrDefault();
-            NewMethod(caveConnections, lastPoint, path, firstOrDefault);
+            if (!TryMoveToNextPoint(caveConnections, lastPoint, path, firstOrDefault))
+                paths.Remove(path);
         }
-
-        if (possibleMoves.Count() == 0 && path.Segments.LastOrDefault() != "end")
-        {
-            paths.Remove(path);
-        }
+        
+        //Branch new traversals
         foreach (var destination in possibleMoves)
         {
             var newPath = new Path();
             newPath.Segments = new List<string>(path.Segments);
             if (!PathEnded(newPath))
             {
-                var success = NewMethod(caveConnections, lastPoint, newPath, destination);
-                if(success) 
+                var success = TryMoveToNextPoint(caveConnections, lastPoint, newPath, destination);
+                if (success)
                     paths.Add(newPath);
+                else
+                    paths.Remove(newPath);
             }
         }
     }
@@ -62,16 +50,16 @@ public class PathFindingService : IPathFindingService
         return path.Segments.Contains("end");
     }
 
-    private bool NewMethod(List<CaveConnections> caveConnections, string lastPoint, Path path, CaveConnections? desintation)
+    private bool TryMoveToNextPoint(List<CaveConnections> caveConnections, string lastPoint, Path path, CaveConnections? destination)
     {
-        var nextPoint = desintation.PointA == lastPoint ? desintation.PointB : desintation.PointA;
+        var nextPoint = destination.PointA == lastPoint ? destination.PointB : destination.PointA;
         if (IsSmallCaveAndAlreadyVisited(nextPoint, path))
             return false;
         if(path.Segments.LastOrDefault() == nextPoint)
             return false;
         path.Segments.Add(nextPoint);
-         Traverse(caveConnections, nextPoint, path);
-         return true;
+        Traverse(caveConnections, nextPoint, path);
+        return true;
     }
 
     public bool IsSmallCaveAndAlreadyVisited(string destination, Path path)
