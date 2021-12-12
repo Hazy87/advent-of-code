@@ -20,14 +20,6 @@ public class PathFindingService : IPathFindingService
     {
         //Find places to move which I didnt just come from.
         var possibleMoves = caveConnections.Where(x => x.PointA == lastPoint || x.PointB == lastPoint);
-
-        //Only 1 way to go 
-        if (possibleMoves.Count() == 1)
-        {
-            var firstOrDefault = possibleMoves.FirstOrDefault();
-            if (!TryMoveToNextPoint(caveConnections, lastPoint, path, firstOrDefault))
-                paths.Remove(path);
-        }
         
         //Branch new traversals
         foreach (var destination in possibleMoves)
@@ -39,8 +31,6 @@ public class PathFindingService : IPathFindingService
                 var success = TryMoveToNextPoint(caveConnections, lastPoint, newPath, destination);
                 if (success)
                     paths.Add(newPath);
-                else
-                    paths.Remove(newPath);
             }
         }
     }
@@ -52,7 +42,7 @@ public class PathFindingService : IPathFindingService
 
     private bool TryMoveToNextPoint(List<CaveConnections> caveConnections, string lastPoint, Path path, CaveConnections? destination)
     {
-        var nextPoint = destination.PointA == lastPoint ? destination.PointB : destination.PointA;
+        var nextPoint = destination?.PointA == lastPoint ? destination.PointB : destination?.PointA;
         if (IsSmallCaveAndAlreadyVisited(nextPoint, path))
             return false;
         if(path.Segments.LastOrDefault() == nextPoint)
@@ -64,8 +54,6 @@ public class PathFindingService : IPathFindingService
 
     public bool IsSmallCaveAndAlreadyVisited(string destination, Path path)
     {
-        if(string.Join("-", path.Segments).StartsWith("start-b-d-b-A"))
-            Debugger.Break();
         if (IsSmallCave(destination) && DontHaveTimeForaVisit(destination, path))
             return true;
         return false;
