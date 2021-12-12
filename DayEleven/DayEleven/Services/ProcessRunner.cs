@@ -17,11 +17,13 @@ public class ProcessRunner : IProcessRunner
         int steps = 10;
         int flashes = 0;
         PrintBoard(octopuses);
-        for (int i = 1; i <= 100; i++)
+        for (int i = 1; i <= 1000; i++)
         {
             _flashService.IncrementAll(octopuses);
             flashes += _flashService.Flash(octopuses);
-            PrintBoard(octopuses);
+            //PrintBoard(octopuses);
+            if(octopuses.All(x => x.Flashed))
+                Console.WriteLine($"All flashed at {i}");
         }
 
         Console.WriteLine($"done {flashes}");
