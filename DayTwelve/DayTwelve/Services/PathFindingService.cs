@@ -1,20 +1,30 @@
-﻿namespace DayTwelve.Services;
+﻿using System.Collections.Concurrent;
+
+namespace DayTwelve.Services;
 
 public class PathFindingService : IPathFindingService
 {
-    private List<Path> paths = new();
-    public List<Path> FindPaths(List<CaveConnections> caveConnections)
+    private ConcurrentBag<Path> paths = new();
+    public ConcurrentBag<Path> FindPaths(List<CaveConnections> caveConnections)
     {
-        foreach (var connection in caveConnections.Where(x => x.PointA == "start"))
+        Parallel.ForEach(caveConnections.Where(x => x.PointA == "start"), startingConnection =>
         {
-            var path = new Path();
-            path.Segments.Add("start");
-            path.Segments.Add(connection.PointB);
-            if(Traverse(caveConnections.Where(x => x.PointA != "start").ToList(), connection.PointB, path))
+            var path = StartPath(startingConnection);
+            var tryTraversePath = Traverse(caveConnections.Where(x => x.PointA != "start").ToList(), startingConnection.PointB, path);
+            if (tryTraversePath)
                 paths.Add(path);
-        }
+        });
         return paths;
     }
+
+    private static Path StartPath(CaveConnections connection)
+    {
+        var path = new Path();
+        path.Segments.Add("start");
+        path.Segments.Add(connection.PointB);
+        return path;
+    }
+
     private bool Traverse(List<CaveConnections> caveConnections, string lastPoint, Path path)
     {
         var foundPath = false;
@@ -32,21 +42,26 @@ public class PathFindingService : IPathFindingService
 
     private bool TraversePossibleMove(List<CaveConnections> caveConnections, string lastPoint, Path path, CaveConnections destination)
     {
-        var newPath = new Path();
-        newPath.Segments = new List<string>(path.Segments);
-        if (!PathEnded(newPath))
-        {
-            var success = TryMoveToNextPoint(caveConnections, lastPoint, newPath, destination);
-            if (success && newPath.Segments.LastOrDefault() == "end")
-            {
-                paths.Add(newPath);
-                return true;
-            }
-        }
-        return false;
+        if (PathEnded(path)) return false;
+
+        var newPath = ClonePath(path);
+        var success = TryMoveToNextPoint(caveConnections, lastPoint, newPath, destination);
+        if (!success || newPath.Segments.LastOrDefault() != "end") return false;
+        
+        paths.Add(newPath);
+        return true;
     }
 
-    private bool PathEnded(Path path)
+    private static Path ClonePath(Path path)
+    {
+        var newPath = new Path
+        {
+            Segments = new List<string>(path.Segments)
+        };
+        return newPath;
+    }
+
+    private static bool PathEnded(Path path)
     {
         return path.Segments.Contains("end");
     }
@@ -63,12 +78,10 @@ public class PathFindingService : IPathFindingService
 
     public bool IsSmallCaveAndAlreadyVisited(string destination, Path path)
     {
-        if (IsSmallCave(destination) && DontHaveTimeForaVisit(destination, path))
-            return true;
-        return false;
+        return IsSmallCave(destination) && DontHaveTimeForaVisit(destination, path);
     }
 
-    private bool DontHaveTimeForaVisit(string destination, Path path)
+    private static bool DontHaveTimeForaVisit(string destination, Path path)
     {
         var smallCaves = path.Segments.Where(x => x.ToUpper() != x).GroupBy(x => x);
         if (smallCaves.Any(x => x.Count() > 1) && path.Segments.Contains(destination))
@@ -76,10 +89,8 @@ public class PathFindingService : IPathFindingService
         return false;
     }
 
-    private bool IsSmallCave(string destination)
+    private static bool IsSmallCave(string destination)
     {
-        if (destination.ToUpper() != destination && destination != "end")
-            return true;
-        return false;
+        return destination.ToUpper() != destination && destination != "end";
     }
 }

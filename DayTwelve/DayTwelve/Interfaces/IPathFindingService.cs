@@ -1,8 +1,9 @@
-﻿using Path = DayTwelve.Services.Path;
+﻿using System.Collections.Concurrent;
+using Path = DayTwelve.Services.Path;
 
 namespace DayTwelve.Interfaces;
 
 public interface IPathFindingService
 {
-    List<Path> FindPaths(List<CaveConnections> caveConnections);
+    ConcurrentBag<Path> FindPaths(List<CaveConnections> caveConnections);
 }
