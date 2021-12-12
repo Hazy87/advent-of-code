@@ -10,29 +10,40 @@ public class PathFindingService : IPathFindingService
             var path = new Path();
             path.Segments.Add("start");
             path.Segments.Add(connection.PointB);
-            Traverse(caveConnections.Where(x => x.PointA != "start").ToList(), connection.PointB, path);
-            paths.Add(path);
+            if(Traverse(caveConnections.Where(x => x.PointA != "start").ToList(), connection.PointB, path))
+                paths.Add(path);
         }
-
-        return  paths.Where(x => x.Segments.LastOrDefault() == "end").ToList();
+        return paths;
     }
-    private void Traverse(List<CaveConnections> caveConnections, string lastPoint, Path path)
+    private bool Traverse(List<CaveConnections> caveConnections, string lastPoint, Path path)
     {
+        var foundPath = false;
         //Find places to move which I didnt just come from.
         var possibleMoves = caveConnections.Where(x => x.PointA == lastPoint || x.PointB == lastPoint);
         
-        //Branch new traversals
         foreach (var destination in possibleMoves)
         {
-            var newPath = new Path();
-            newPath.Segments = new List<string>(path.Segments);
-            if (!PathEnded(newPath))
+            if (TraversePossibleMove(caveConnections, lastPoint, path, destination))
+                foundPath = true;
+        }
+
+        return foundPath;
+    }
+
+    private bool TraversePossibleMove(List<CaveConnections> caveConnections, string lastPoint, Path path, CaveConnections destination)
+    {
+        var newPath = new Path();
+        newPath.Segments = new List<string>(path.Segments);
+        if (!PathEnded(newPath))
+        {
+            var success = TryMoveToNextPoint(caveConnections, lastPoint, newPath, destination);
+            if (success && newPath.Segments.LastOrDefault() == "end")
             {
-                var success = TryMoveToNextPoint(caveConnections, lastPoint, newPath, destination);
-                if (success)
-                    paths.Add(newPath);
+                paths.Add(newPath);
+                return true;
             }
         }
+        return false;
     }
 
     private bool PathEnded(Path path)
@@ -44,8 +55,6 @@ public class PathFindingService : IPathFindingService
     {
         var nextPoint = destination?.PointA == lastPoint ? destination.PointB : destination?.PointA;
         if (IsSmallCaveAndAlreadyVisited(nextPoint, path))
-            return false;
-        if(path.Segments.LastOrDefault() == nextPoint)
             return false;
         path.Segments.Add(nextPoint);
         Traverse(caveConnections, nextPoint, path);
