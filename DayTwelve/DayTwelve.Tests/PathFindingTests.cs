@@ -20,4 +20,21 @@ public class PathFindingTests
         var paths = _service.FindPaths(caveConnectionsList);
         Assert.Equal(10, paths.Count);
     }
+
+    [Theory]
+    [InlineData("start-YY-gp-YY-rz", "rz", false)]
+    [InlineData("start-YY-gp-YY-rz-AA-ca-AAA-rz", "rz", true)]
+    [InlineData("start-YY-gp-YY-rz-AA-ca-AAA-rz", "ca", true)]
+    [InlineData("start-b-d-b-A", "c", false)]
+    public void IsSmallCaveAndHaveTime(string pathString, string destination, bool expectedResult)
+    {
+        var path = new Path();
+        foreach (var pathPart in pathString.Split("-"))
+        {
+            path.Segments.Add(pathPart);
+        }
+
+        var result = _service.IsSmallCaveAndAlreadyVisited(destination, path);
+        Assert.Equal(expectedResult, result);
+    }
 }

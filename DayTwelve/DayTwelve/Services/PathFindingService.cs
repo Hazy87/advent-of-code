@@ -14,8 +14,10 @@ public class PathFindingService : IPathFindingService
             paths.Add(path);
         }
 
-        var list = paths.Where(x => x.Segments.LastOrDefault() == "end").ToList();
+        var list = paths.Where(x => x.Segments.LastOrDefault() == "end").ToList(); 
         PrintBoard(list);
+
+        list = list.Where(x => x.Segments.Where(a => a.ToUpper() != a).GroupBy(y => y).Count(z => z.Count() > 1) <= 1).ToList();
         return list;
     }
     private static void PrintBoard(List<Path> Paths)
@@ -72,15 +74,26 @@ public class PathFindingService : IPathFindingService
          return true;
     }
 
-    private bool IsSmallCaveAndAlreadyVisited(string destination, Path path)
+    public bool IsSmallCaveAndAlreadyVisited(string destination, Path path)
     {
-        if (IsSmallCave(destination) && path.Segments.Count(x => x == destination) == 1)
+        if(string.Join("-", path.Segments).StartsWith("start-b-d-b-A"))
+            Debugger.Break();
+        if (IsSmallCave(destination) && DontHaveTimeForaVisit(destination, path))
             return true;
         return false;
     }
+
+    private bool DontHaveTimeForaVisit(string destination, Path path)
+    {
+        var smallCaves = path.Segments.Where(x => x.ToUpper() != x).GroupBy(x => x);
+        if (smallCaves.Any(x => x.Count() > 1) && path.Segments.Contains(destination))
+            return true;
+        return false;
+    }
+
     private bool IsSmallCave(string destination)
     {
-        if (destination.ToUpper() != destination)
+        if (destination.ToUpper() != destination && destination != "end")
             return true;
         return false;
     }
