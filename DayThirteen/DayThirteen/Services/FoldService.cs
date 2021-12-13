@@ -15,8 +15,7 @@ public class FoldService : IFoldService
 
     public IEnumerable<Coordinate> GetNewCoordinatesAfterFold(List<Coordinate> coordinates, Fold fold)
     {
-        var foldedCoordinates = coordinates.Select(coordinate => GetNewCoordinateAfterFold(coordinate, fold));
-        return foldedCoordinates;
+        return coordinates.Select(coordinate => GetNewCoordinateAfterFold(coordinate, fold));
     }
     public Coordinate GetNewCoordinateAfterFold(Coordinate coordinate, Fold fold)
     {
@@ -33,7 +32,6 @@ public class FoldService : IFoldService
         {
             PrintLine(foldedCordinates, y, foldedCordinates.Max(x => x.X));
         }
-        Console.WriteLine();
     }
 
     private static void PrintLine(List<Coordinate> foldedCordinates, int y, int xMax)
@@ -42,7 +40,6 @@ public class FoldService : IFoldService
         {
             Console.Write(foldedCordinates.Any(z => z.X == x && z.Y == y) ? "#" : ".");
         }
-
         Console.Write(Environment.NewLine);
     }
 
