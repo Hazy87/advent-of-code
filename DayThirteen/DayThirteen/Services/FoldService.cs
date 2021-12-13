@@ -31,10 +31,15 @@ public class FoldService : IFoldService
     
     private (int X, int Y) YFold((int X, int Y) coordinate, int foldLine)
     {
-        return (coordinate.X, foldLine - (coordinate.Y - foldLine));
+        return (coordinate.X, GetFoldedCordinate(coordinate.Y,foldLine));
     }
     private (int X, int Y) XFold((int X, int Y) coordinate, int foldLine)
     {
-        return (foldLine - (coordinate.X - foldLine), coordinate.Y);
+        return (GetFoldedCordinate(coordinate.X, foldLine), coordinate.Y);
+    }
+
+    private static int GetFoldedCordinate(int coordinateToFold, int foldLine)
+    {
+        return foldLine - (coordinateToFold - foldLine);
     }
 }
