@@ -4,56 +4,46 @@ public class FoldService : IFoldService
 {
     public List<Coordinate> GetNewCoordinatesAfterFolds(List<Coordinate> coordinates, List<Fold> folds)
     {
-        //Print(coordinates);
-
-        var foldedCordinates = coordinates;
+        var foldedCoordinates = coordinates;
         foreach (var fold in folds)
         {
-            foldedCordinates = GetNewCoordinatesAfterFold(foldedCordinates, fold);
-            //Print(foldedCordinates);
-            Console.WriteLine($"line {folds.IndexOf(fold)} has {foldedCordinates.Count} dots");
+            foldedCoordinates = GetNewCoordinatesAfterFold(foldedCoordinates, fold).ToList();
+            Console.WriteLine($"line {folds.IndexOf(fold)} has {foldedCoordinates.Count} dots");
         }
-        return foldedCordinates.DistinctBy(x => (x.X, x.Y)).ToList().OrderBy(x => x.Y).OrderBy(x => x.X).ToList();
+        return foldedCoordinates;
     }
 
+    public IEnumerable<Coordinate> GetNewCoordinatesAfterFold(List<Coordinate> coordinates, Fold fold)
+    {
+        var foldedCoordinates = coordinates.Select(coordinate => GetNewCoordinateAfterFold(coordinate, fold));
+        return foldedCoordinates;
+    }
+    public Coordinate GetNewCoordinateAfterFold(Coordinate coordinate, Fold fold)
+    {
+        return fold.IsYFold switch
+        {
+            true when coordinate.Y > fold.FoldLine => YFold(coordinate, fold.FoldLine),
+            false when coordinate.X > fold.FoldLine => XFold(coordinate, fold.FoldLine),
+            _ => coordinate
+        };
+    }
     public void Print(List<Coordinate> foldedCordinates)
     {
-        var xCordinates = foldedCordinates.Select(x => x.X).OrderBy(x => x);
-        var xMax = xCordinates.Any() ? xCordinates.Max() : 0;
-
-        var yCordinates = foldedCordinates.Select(x => x.Y).OrderBy(x => x);
-        for (int y = 0; y <= yCordinates.Max(); y++)
+        for (var y = 0; y <= foldedCordinates.Max(x => x.Y); y++)
         {
-            xCordinates = foldedCordinates.Where(x => x.Y == y).Select(x => x.X).OrderBy(x => x);
-            for (int x = 0; x <= xMax; x++)
-            {
-                if(foldedCordinates.Any(z => z.X == x && z.Y == y))
-                    Console.Write("#");
-                else
-                    Console.Write(".");
-            }
-            Console.Write(Environment.NewLine);
+            PrintLine(foldedCordinates, y, foldedCordinates.Max(x => x.X));
         }
         Console.WriteLine();
     }
 
-    public List<Coordinate> GetNewCoordinatesAfterFold(List<Coordinate> coordinates, Fold fold)
+    private static void PrintLine(List<Coordinate> foldedCordinates, int y, int xMax)
     {
-        var foldedCordinates = new List<Coordinate>();
-        foreach (var coordinate in coordinates) 
+        for (var x = 0; x <= xMax; x++)
         {
-            foldedCordinates.Add(GetNewCoordinateAfterFold(coordinate, fold));
+            Console.Write(foldedCordinates.Any(z => z.X == x && z.Y == y) ? "#" : ".");
         }
 
-        return foldedCordinates.DistinctBy(x => (x.X, x.Y)).ToList();
-    }
-    public Coordinate GetNewCoordinateAfterFold(Coordinate coordinate, Fold fold)
-    {
-        if (fold.IsYFold && coordinate.Y > fold.FoldLine)
-            return YFold(coordinate, fold.FoldLine);
-        if (coordinate.X > fold.FoldLine && !fold.IsYFold)
-            return XFold(coordinate, fold.FoldLine);
-        return coordinate;
+        Console.Write(Environment.NewLine);
     }
 
     private Coordinate YFold(Coordinate coordinate, int foldLine)
