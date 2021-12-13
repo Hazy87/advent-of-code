@@ -9,7 +9,6 @@ public class FoldService : IFoldService
         foreach (var fold in folds)
         {
             foldedCoordinates = GetNewCoordinatesAfterFold(foldedCoordinates, fold).ToList();
-            Console.WriteLine($"{foldedCoordinates.Count()} dots");
         }
         return foldedCoordinates;
     }
@@ -17,7 +16,7 @@ public class FoldService : IFoldService
     public IEnumerable<(int X, int Y)> GetNewCoordinatesAfterFold(IEnumerable<(int X, int Y)> coordinates,
         (bool IsYFold, int FoldLine) fold)
     {
-        return coordinates.Select(coordinate => GetNewCoordinateAfterFold(coordinate, fold));
+        return coordinates.Select(coordinate => GetNewCoordinateAfterFold(coordinate, fold)).Distinct();
     }
     public (int X, int Y) GetNewCoordinateAfterFold((int X, int Y) coordinate, (bool IsYFold, int FoldLine) fold)
     {
@@ -31,14 +30,14 @@ public class FoldService : IFoldService
     
     private (int X, int Y) YFold((int X, int Y) coordinate, int foldLine)
     {
-        return (coordinate.X, GetFoldedCordinate(coordinate.Y,foldLine));
+        return (coordinate.X, GetFoldedCoordinate(coordinate.Y,foldLine));
     }
     private (int X, int Y) XFold((int X, int Y) coordinate, int foldLine)
     {
-        return (GetFoldedCordinate(coordinate.X, foldLine), coordinate.Y);
+        return (GetFoldedCoordinate(coordinate.X, foldLine), coordinate.Y);
     }
 
-    private static int GetFoldedCordinate(int coordinateToFold, int foldLine)
+    private static int GetFoldedCoordinate(int coordinateToFold, int foldLine)
     {
         return foldLine - (coordinateToFold - foldLine);
     }

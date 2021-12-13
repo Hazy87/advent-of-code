@@ -2,5 +2,5 @@
 
 public interface IPrintService
 {
-    void Print(IEnumerable<(int X, int Y)> foldedCordinates);
+    void Print(IEnumerable<(int X, int Y)> foldedCoordinates);
 }

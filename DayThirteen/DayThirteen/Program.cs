@@ -1,6 +1,8 @@
-﻿var sw = new Stopwatch();
-Console.WriteLine("Hello, World!");
-using IHost host = Host.CreateDefaultBuilder(args)
+﻿using System.Data.SqlTypes;
+
+var sw = new Stopwatch();
+Console.WriteLine("Day 13");
+using var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
         services.AddSingleton<IProcessRunner, ProcessRunner>()
             .AddSingleton<IFoldService, FoldService>()
@@ -8,9 +10,12 @@ using IHost host = Host.CreateDefaultBuilder(args)
             .AddSingleton<IInputService, InputService>()
     ).Build();
 var runner = host.Services.GetService<IProcessRunner>();
-
 sw.Start();
-await runner.Run();
+await runner?.Part1()!;
 sw.Stop();
-Console.WriteLine("time" + sw.ElapsedMilliseconds.ToString());
-Console.ReadLine();
+Console.WriteLine($"Part 1 : Running time is {sw.ElapsedMilliseconds}ms");
+sw.Reset();
+sw.Start();
+await runner?.Part2()!;
+sw.Stop();
+Console.WriteLine($"Part 2 Running time is {sw.ElapsedMilliseconds}ms");

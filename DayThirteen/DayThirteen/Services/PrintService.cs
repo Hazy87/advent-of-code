@@ -2,11 +2,11 @@
 
 public class PrintService : IPrintService
 {
-    public void Print(IEnumerable<(int X, int Y)> foldedCordinates)
+    public void Print(IEnumerable<(int X, int Y)> foldedCoordinates)
     {
-        for (var y = 0; y <= foldedCordinates.Max(x => x.Y); y++)
+        for (var y = 0; y <= foldedCoordinates.Max(x => x.Y); y++)
         {
-            PrintLine(foldedCordinates, y, foldedCordinates.Max(x => x.X));
+            PrintLine(foldedCoordinates, y, foldedCoordinates.Max(x => x.X));
         }
     }
 

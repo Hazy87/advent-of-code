@@ -2,5 +2,6 @@
 
 public interface IProcessRunner
 {
-    Task Run();
+    Task Part2();
+    Task Part1();
 }
