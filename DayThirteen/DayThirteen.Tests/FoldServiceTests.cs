@@ -19,7 +19,7 @@ public class FoldServiceTests
     [InlineData(14,2,40,false)]
     public void Fold_Cordinate_ShouldReturnSameCoordinate_IfAboveFold(int x, int y, int foldline, bool yfold)
     {
-        var newCoordinate = _service.GetNewCoordinateAfterFold(new Coordinate {X = x,Y = y}, new Fold {FoldLine = foldline, IsYFold = yfold});
+        var newCoordinate = _service.GetNewCoordinateAfterFold((x,y), (yfold, foldline));
         Assert.Equal(x, newCoordinate.X);
         Assert.Equal(y, newCoordinate.Y);
     }
@@ -33,7 +33,7 @@ public class FoldServiceTests
     [InlineData(4, 5 , 3, false, 2, 5)]
     public void Fold_Cordinate_ShouldReturnCorrectCoordinate_IfBelowFold(int x, int y, int foldline, bool yfold, int expectedx, int expectedy)
     {
-        var newCoordinate = _service.GetNewCoordinateAfterFold(new Coordinate { X = x, Y = y }, new Fold { FoldLine = foldline, IsYFold = yfold });
+        var newCoordinate = _service.GetNewCoordinateAfterFold((x, y ), (yfold, foldline));
         Assert.Equal(expectedx, newCoordinate.X);
         Assert.Equal(expectedy, newCoordinate.Y);
     }

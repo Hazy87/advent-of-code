@@ -2,5 +2,5 @@
 
 public interface IInputService
 {
-    Task<(List<Coordinate> coordinates, List<Fold> folds)> GetInput();
+    Task<(IEnumerable<(int X, int Y)> coordinates, IEnumerable<(bool IsYFold, int FoldLine)> folds)> GetInput();
 }

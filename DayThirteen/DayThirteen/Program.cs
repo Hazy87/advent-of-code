@@ -4,6 +4,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
         services.AddSingleton<IProcessRunner, ProcessRunner>()
             .AddSingleton<IFoldService, FoldService>()
+            .AddSingleton<IPrintService, PrintService>()
             .AddSingleton<IInputService, InputService>()
     ).Build();
 var runner = host.Services.GetService<IProcessRunner>();

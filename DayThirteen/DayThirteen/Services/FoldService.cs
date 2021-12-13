@@ -2,22 +2,24 @@
 
 public class FoldService : IFoldService
 {
-    public List<Coordinate> GetNewCoordinatesAfterFolds(List<Coordinate> coordinates, List<Fold> folds)
+    public IEnumerable<(int X, int Y)> GetNewCoordinatesAfterFolds(IEnumerable<(int X, int Y)> coordinates,
+        IEnumerable<(bool IsYFold, int FoldLine)> folds)
     {
         var foldedCoordinates = coordinates;
         foreach (var fold in folds)
         {
             foldedCoordinates = GetNewCoordinatesAfterFold(foldedCoordinates, fold).ToList();
-            Console.WriteLine($"line {folds.IndexOf(fold)} has {foldedCoordinates.Count} dots");
+            Console.WriteLine($"{foldedCoordinates.Count()} dots");
         }
         return foldedCoordinates;
     }
-
-    public IEnumerable<Coordinate> GetNewCoordinatesAfterFold(List<Coordinate> coordinates, Fold fold)
+    
+    public IEnumerable<(int X, int Y)> GetNewCoordinatesAfterFold(IEnumerable<(int X, int Y)> coordinates,
+        (bool IsYFold, int FoldLine) fold)
     {
         return coordinates.Select(coordinate => GetNewCoordinateAfterFold(coordinate, fold));
     }
-    public Coordinate GetNewCoordinateAfterFold(Coordinate coordinate, Fold fold)
+    public (int X, int Y) GetNewCoordinateAfterFold((int X, int Y) coordinate, (bool IsYFold, int FoldLine) fold)
     {
         return fold.IsYFold switch
         {
@@ -26,29 +28,13 @@ public class FoldService : IFoldService
             _ => coordinate
         };
     }
-    public void Print(List<Coordinate> foldedCordinates)
+    
+    private (int X, int Y) YFold((int X, int Y) coordinate, int foldLine)
     {
-        for (var y = 0; y <= foldedCordinates.Max(x => x.Y); y++)
-        {
-            PrintLine(foldedCordinates, y, foldedCordinates.Max(x => x.X));
-        }
+        return (coordinate.X, foldLine - (coordinate.Y - foldLine));
     }
-
-    private static void PrintLine(List<Coordinate> foldedCordinates, int y, int xMax)
+    private (int X, int Y) XFold((int X, int Y) coordinate, int foldLine)
     {
-        for (var x = 0; x <= xMax; x++)
-        {
-            Console.Write(foldedCordinates.Any(z => z.X == x && z.Y == y) ? "#" : ".");
-        }
-        Console.Write(Environment.NewLine);
-    }
-
-    private Coordinate YFold(Coordinate coordinate, int foldLine)
-    {
-        return new Coordinate { X = coordinate.X, Y = foldLine - (coordinate.Y - foldLine) };
-    }
-    private Coordinate XFold(Coordinate coordinate, int foldLine)
-    {
-        return new Coordinate { X = foldLine - (coordinate.X - foldLine), Y = coordinate.Y};
+        return (foldLine - (coordinate.X - foldLine), coordinate.Y);
     }
 }
