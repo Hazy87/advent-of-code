@@ -13,11 +13,13 @@ public class ProcessRunner : IProcessRunner
 
     public async Task Run()
     {
-        var (template, rules) = await _inputService.GetLines(false);
+        var (template, rules) = await _inputService.GetLines(true);
         //part 1 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 40; i++)
         {
+            Console.Clear(); Console.WriteLine(i);
             template = _insertionService.InsertPolimer(template, rules);
+            
         }
 
         var groupBy = template.ToCharArray().GroupBy(x => x);
