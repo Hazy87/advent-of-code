@@ -29,22 +29,42 @@ public class InputService : IInputService
 
         return grid;
     }
-    
-}
 
-public class Grid
-{
-    public int YSize { get; set; }
-    public int XSize { get; set; }
-    public List<Node> Nodes { get; set; } = new();
-}
+    public void IncreaseGridSize(Grid grid, int size)
+    {
+        var horizontalDuplicates = new List<Node>();
+        var verticalDuplicates = new List<Node>();
+        for (var i = 1; i < size; i++)
+        {
+            var i1 = i;
+            horizontalDuplicates.AddRange(grid.Nodes.Select(x =>
+            {
+                var argRiskFactor = x.RiskFactor + i1 > 9 ? x.RiskFactor + i1 - 9: x.RiskFactor + i1;
+                return new Node()
+                    {
+                        Distance = int.MaxValue, RiskFactor = argRiskFactor,
+                        X = x.X + (i * grid.XSize), Y = x.Y, Visited = false
+                    };
+            }));
+        }
+        grid.Nodes.AddRange(horizontalDuplicates);
 
-public class Node
-{
-    public int X { get; set; }
-    public int Y { get; set; }
-    public int RiskFactor { get; set; }
+        for (var i = 1; i < size; i++)
+        {
+            var i1 = i;
+            verticalDuplicates.AddRange(grid.Nodes.Select(x =>
+            {
+                var argRiskFactor = x.RiskFactor + i1 > 9 ? x.RiskFactor + i1 -9: x.RiskFactor + i1;
+                return new Node()
+                    {
+                        Distance = int.MaxValue, RiskFactor = argRiskFactor,
+                        Y = x.Y + (i * grid.YSize), X = x.X, Visited = false
+                    };
+            }));
+        }
 
-    public int Distance { get; set; }
-    public bool Visited { get; set; }
+        grid.XSize *= size;
+        grid.YSize *= size;
+        grid.Nodes.AddRange(verticalDuplicates);
+    }
 }

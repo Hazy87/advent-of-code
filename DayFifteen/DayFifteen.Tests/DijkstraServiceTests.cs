@@ -15,15 +15,16 @@ public class DijkstraServiceTests
     }
 
     [Fact]
-    public void ConsiderNode_Should_ChangeAllNeighboursToVisited()
+    public void ConsiderNode_Should_ChangeCurrentNodeToVisited()
     {
         var neighbours = new List<Node>();
         neighbours.Add(new Node() { Distance = 0, RiskFactor = 1, Visited = false, X = 0, Y = 0 });
         neighbours.Add(new Node() { Distance = 0, RiskFactor = 1, Visited = false, X = 0, Y = 0 });
         neighbours.Add(new Node() { Distance = 0, RiskFactor = 1, Visited = false, X = 0, Y = 0 });
-        _service.ConsiderNode(new Node(){Distance = 0, RiskFactor = 1, Visited = false, X = 0, Y =0}, neighbours);
+        var currentNode = new Node(){Distance = 0, RiskFactor = 1, Visited = false, X = 0, Y =0};
+        _service.ConsiderNode(currentNode, neighbours);
 
-        Assert.Equal(3, neighbours.Where(x => x.Visited == true).Count());
+        Assert.True(currentNode.Visited);
     }
 
     [Fact]
