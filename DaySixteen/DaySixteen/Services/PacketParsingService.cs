@@ -39,7 +39,7 @@ public class PacketParsingService : IPacketParsingService
         return Convert.ToInt32(binary.Substring(7, 15), 2);
     }
 
-    public static int GetLiteralValueFromPacket(string binary)
+    public static long GetLiteralValueFromPacket(string binary)
     {
         var counter = "";
         var literalValues = binary.Substring(6).ToCharArray().Chunk(5);
@@ -50,7 +50,7 @@ public class PacketParsingService : IPacketParsingService
                 return Convert.ToInt32(counter,2);
         }
 
-        return Convert.ToInt32(counter, 2);
+        return Convert.ToInt64(counter, 2);
     }
 
     public static List<Packet>? GetSubPackets(string binary)

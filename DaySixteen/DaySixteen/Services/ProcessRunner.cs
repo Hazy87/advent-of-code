@@ -23,6 +23,6 @@ public class ProcessRunner : IProcessRunner
         var packet = new Packet(binary);
         var packetSubPackets = packet.VersionSum;
         if(packetSubPackets!= null)
-            Console.WriteLine($"done: {packet.VersionSum}");
+            Console.WriteLine($"done: {packet.Value}");
     }
 }
