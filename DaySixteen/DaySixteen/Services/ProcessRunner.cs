@@ -17,18 +17,8 @@ public class ProcessRunner : IProcessRunner
     {
         var hexa = await _inputService.GetLines();
         var binary = _hexadecimalConverterService.ConvertHexToBinary(hexa);
-        var lengthTypeId = _packetParsingService.GetLengthTypeId(binary);
-        var subPackets = _packetParsingService.GetSubPackets(binary, lengthTypeId);
-        var counter = 0;
-        foreach (var subPacket in subPackets)
-        {
-            counter+=_packetParsingService.GetVersion(subPacket);
-        }
-        Console.WriteLine($"done: {counter}");
+        var packet = new Packet(binary);
+        if(packet.SubPackets!= null)
+            Console.WriteLine($"done: {packet.VersionSum}");
     }
-}
-
-public class Packet
-{
-
 }

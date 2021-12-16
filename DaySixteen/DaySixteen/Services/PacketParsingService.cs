@@ -12,32 +12,33 @@ public class PacketParsingService : IPacketParsingService
         var getLengthTypeId = GetLengthTypeId(binary);
     }
 
-    public int GetPacketType(string binary)
+    public static int GetPacketType(string binary)
     {
         return Convert.ToInt32(binary.Substring(3, 3), 2);
     }
 
-    public int GetLengthTypeId(string binary)
+    public static int GetLengthTypeId(string binary)
     {
         return Convert.ToInt32(binary.Substring(6, 1), 2);
     }
 
-    public int GetVersion(string binary)
+    public static int GetVersion(string binary)
     {
-        return Convert.ToInt32(binary.Substring(0, 3), 2);
+        var version = Convert.ToInt32(binary.Substring(0, 3), 2);
+        return version;
     }
 
-    public int GetNumberOfSubpackets(string binary)
+    public static int GetNumberOfSubpackets(string binary)
     {
         return Convert.ToInt32(binary.Substring(7, 11), 2);
     }
 
-    public int GetLengthOfSubpackets(string binary)
+    public static int GetLengthOfSubpackets(string binary)
     {
         return Convert.ToInt32(binary.Substring(7, 15), 2);
     }
 
-    public int GetLiteralValueFromPacket(string binary)
+    public static int GetLiteralValueFromPacket(string binary)
     {
         var counter = 0;
         var literalValues = binary.Substring(6).ToCharArray().Chunk(5);
@@ -51,9 +52,10 @@ public class PacketParsingService : IPacketParsingService
         return counter;
     }
 
-    public List<string> GetSubPackets(string binary, int lengthTypeId)
+    public static List<Packet> GetSubPackets(string binary)
     {
-        var returnList = new List<string>();
+        var lengthTypeId = GetLengthTypeId(binary);
+        var returnList = new List<Packet>();
         if (lengthTypeId == 0)
         {
             var length = GetLengthOfSubpackets(binary);
@@ -74,36 +76,38 @@ public class PacketParsingService : IPacketParsingService
             var length = GetNumberOfSubpackets(binary);
             var subpackets = binary.Substring(18);
             bool ended = false;
-            while (!ended)
+            for (int i = 0; i < length; i++)
             {
+                if(string.IsNullOrEmpty(subpackets))
+                    continue;
                 var (packet, remaining) = GetPacketAndRemaining(subpackets);
                 returnList.Add(packet);
                 subpackets = remaining;
-                if (remaining.Length == 0 || remaining.Replace("0","").Length == 0)
-                    ended = true;
             }
         }
 
         return returnList;
     }
 
-    public (string?, string) GetPacketAndRemaining(string subpackets)
+    public static (Packet?, string substring) GetPacketAndRemaining(string subpackets)
     {
         if (GetPacketType(subpackets) == 4)
         {
             var firstPacket = GetFirstPacketForLiteral(subpackets);
 
-            return (firstPacket, subpackets.Substring(firstPacket.Length));
+            return (firstPacket, subpackets.Substring(firstPacket.Binary.Length));
         }
-         
-        var mysubpackets = GetSubPackets(subpackets, GetLengthTypeId(subpackets));
+
+        var packet = new Packet(subpackets);
+        return (packet, subpackets.Substring(packet.Binary.Length));
+        var mysubpackets = GetSubPackets(subpackets);
 
 
-        var substring = subpackets.Substring(mysubpackets[0].Length);
+        var substring = subpackets.Substring(mysubpackets[0].Binary.Length);
         return (mysubpackets.FirstOrDefault(), substring);
     }
 
-    public string GetFirstPacketForLiteral(string subpackets)
+    public static Packet GetFirstPacketForLiteral(string subpackets)
     {
         var valuesAndRemaining = subpackets.Substring(6);
         var firstPacket = new StringBuilder();
@@ -113,7 +117,7 @@ public class PacketParsingService : IPacketParsingService
             firstPacket.Append(chunk[..]);
             if (chunk[0] == '0')
             {
-                return firstPacket.ToString();
+                return new Packet (firstPacket.ToString());
             }
         }
         return null;
