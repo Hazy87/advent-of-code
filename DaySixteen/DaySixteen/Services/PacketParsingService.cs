@@ -6,13 +6,6 @@ namespace DaySixteen.Services;
 
 public class PacketParsingService : IPacketParsingService
 {
-    public void Parse(string binary)
-    {
-        var version = GetVersion(binary);
-        var getType = GetPacketType(binary);
-        var getLengthTypeId = GetLengthTypeId(binary);
-    }
-
     public static int GetPacketType(string binary)
     {
         return Convert.ToInt32(binary.Substring(3, 3), 2);
