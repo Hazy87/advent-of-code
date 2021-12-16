@@ -1,4 +1,7 @@
-﻿namespace DaySixteen.Services;
+﻿using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+
+namespace DaySixteen.Services;
 
 public class ProcessRunner : IProcessRunner
 {
@@ -18,7 +21,8 @@ public class ProcessRunner : IProcessRunner
         var hexa = await _inputService.GetLines();
         var binary = HexadecimalConverterService.ConvertHexToBinary(hexa);
         var packet = new Packet(binary);
-        if(packet.SubPackets!= null)
+        var packetSubPackets = packet.VersionSum;
+        if(packetSubPackets!= null)
             Console.WriteLine($"done: {packet.VersionSum}");
     }
 }

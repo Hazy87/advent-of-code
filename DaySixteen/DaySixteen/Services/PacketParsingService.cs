@@ -1,4 +1,5 @@
-﻿using System.Net.NetworkInformation;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.NetworkInformation;
 using System.Text;
 
 namespace DaySixteen.Services;
@@ -52,62 +53,44 @@ public class PacketParsingService : IPacketParsingService
         return Convert.ToInt32(counter, 2);
     }
 
-    public static List<Packet> GetSubPackets(string binary)
+    public static List<Packet>? GetSubPackets(string binary)
     {
-        var lengthTypeId = GetLengthTypeId(binary);
-        var returnList = new List<Packet>();
-        if (lengthTypeId == 0)
-        {
-            var length = GetLengthOfSubpackets(binary);
+        var remaining = binary;
+        var subPackets = new List<Packet>();
 
-            var subpackets = binary.Substring(22 , length);
-            bool ended = false;
-            while (!ended)
-            {
-                var (packet, remaining) = GetPacketAndRemaining(subpackets);
-                returnList.Add(packet);
-                subpackets = remaining;
-                if (remaining.Length == 0)
-                    ended = true;
-            }
-        }
-        if (lengthTypeId == 1)
+        for (var i = 0; i < 2000; i++)
+        if (remaining.Length > 7)
         {
-            var length = GetNumberOfSubpackets(binary);
-            var subpackets = binary.Substring(18);
-            bool ended = false;
-            for (int i = 0; i < length; i++)
-            {
-                if(string.IsNullOrEmpty(subpackets))
-                    continue;
-                var (packet, remaining) = GetPacketAndRemaining(subpackets);
-                returnList.Add(packet);
-                subpackets = remaining;
-            }
+            var (packet, newRemaining) = GetFirstPacketRemaining(remaining);
+            remaining = newRemaining;
+            subPackets.Add(packet);
         }
 
-        return returnList;
+        return subPackets;
     }
 
-    public static (Packet?, string substring) GetPacketAndRemaining(string subpackets)
+    public static (Packet literal, string remaining) GetFirstPacketRemaining(string subpackets)
     {
         if (GetPacketType(subpackets) == 4)
         {
-            var firstPacket = GetFirstPacketForLiteral(subpackets);
-
-            return (firstPacket, subpackets.Substring(firstPacket.Binary.Length));
+            return GetFirstPacketForLiteralAndRemaining(subpackets);
         }
 
-        var packet = new Packet(subpackets);
-        return (packet, subpackets.Substring(packet.Binary.Length));
-        var mysubpackets = GetSubPackets(subpackets);
+        if (GetLengthTypeId(subpackets) == 0)
+        {
+            return GetFirstPacketForTypeZeroAndRemaining(subpackets);
+        }
 
+        if (GetLengthTypeId(subpackets) == 1)
+        {
+            return GetFirstPacketForTypeOneAndRemaining(subpackets);
+        }
 
-        var substring = subpackets.Substring(mysubpackets[0].Binary.Length);
-        return (mysubpackets.FirstOrDefault(), substring);
+        throw new Exception();
     }
 
-    public static Packet GetFirstPacketForLiteral(string subpackets)
+
+    public static (Packet literal, string remaining) GetFirstPacketForLiteralAndRemaining(string subpackets)
     {
         var valuesAndRemaining = subpackets.Substring(6);
         var firstPacket = new StringBuilder();
@@ -117,9 +100,44 @@ public class PacketParsingService : IPacketParsingService
             firstPacket.Append(chunk[..]);
             if (chunk[0] == '0')
             {
-                return new Packet (firstPacket.ToString());
+                return (new Packet (firstPacket.ToString()), subpackets.Substring(firstPacket.Length));
             }
         }
-        return null;
+        return (null, "");
+    }
+
+    public static (Packet literal, string remaining) GetFirstPacketForTypeZeroAndRemaining(string subpackets)
+    {
+        var length = GetLengthOfSubpackets(subpackets);
+        return (new Packet(subpackets.Substring(0, 22 + length)), subpackets.Substring(22 + length));
+    }
+
+    public static (Packet literal, string remaining) GetFirstPacketForTypeOneAndRemaining(string subpackets)
+    {
+        var count = GetNumberOfSubpackets(subpackets);
+        var content = subpackets.Substring(18);
+        for (int i = 0; i < count; i++)
+        {
+            if (GetPacketType(content) == 4)
+            {
+                var (literal, remaining) = GetFirstPacketForLiteralAndRemaining(content);
+                content = remaining;
+                continue;
+            }
+
+            if (GetLengthTypeId(content) == 0)
+            {
+                var (literal, remaining) = GetFirstPacketForTypeZeroAndRemaining(content);
+                content = remaining;
+                continue;
+            }
+            if (GetLengthTypeId(content) == 1)
+            {
+                var (literal, remaining) = GetFirstPacketForTypeOneAndRemaining(content);
+                content = remaining;
+                continue;
+            }
+        }
+        return (new Packet(subpackets.Substring(0, subpackets.Length - content.Length)), content);
     }
 }
