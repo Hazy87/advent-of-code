@@ -40,16 +40,16 @@ public class PacketParsingService : IPacketParsingService
 
     public static int GetLiteralValueFromPacket(string binary)
     {
-        var counter = 0;
+        var counter = "";
         var literalValues = binary.Substring(6).ToCharArray().Chunk(5);
-        foreach (var literalValue in literalValues)
+        foreach (var literalValue in literalValues.Where(x => x.Length == 5))
         {
-            counter += Convert.ToInt32(string.Join("",literalValue).ToString(), 2);
+            counter += string.Join("",literalValue)[1..].ToString();
             if (literalValue[0] == 0)
-                return counter;
+                return Convert.ToInt32(counter,2);
         }
 
-        return counter;
+        return Convert.ToInt32(counter, 2);
     }
 
     public static List<Packet> GetSubPackets(string binary)

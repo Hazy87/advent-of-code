@@ -16,7 +16,7 @@ public class ProcessRunner : IProcessRunner
     public async Task Run()
     {
         var hexa = await _inputService.GetLines();
-        var binary = _hexadecimalConverterService.ConvertHexToBinary(hexa);
+        var binary = HexadecimalConverterService.ConvertHexToBinary(hexa);
         var packet = new Packet(binary);
         if(packet.SubPackets!= null)
             Console.WriteLine($"done: {packet.VersionSum}");

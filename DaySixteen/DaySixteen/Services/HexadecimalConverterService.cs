@@ -4,7 +4,7 @@ namespace DaySixteen.Services;
 
 public class HexadecimalConverterService : IHexadecimalConverterService
 {
-    public string ConvertHexToBinary(string hexadecimal)
+    public static string ConvertHexToBinary(string hexadecimal)
     {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < hexadecimal.Length; i++)

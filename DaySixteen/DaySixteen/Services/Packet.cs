@@ -7,6 +7,11 @@ public class Packet
         Binary = binary;
     }
 
+    public Packet(string hex, bool b)
+    {
+        Binary = HexadecimalConverterService.ConvertHexToBinary(hex);
+    }
+
     public string Binary { get; }
 
     public int LengthType => PacketParsingService.GetLengthTypeId(Binary);

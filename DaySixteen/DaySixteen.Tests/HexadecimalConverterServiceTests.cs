@@ -17,7 +17,7 @@ public class HexadecimalConverterServiceTests
     [InlineData("8A004A801A8002F478", "100010100000000001001010100000000001101010000000000000101111010001111000")]
     public void ConvertHexToBinary_should_Return_Correct(string hexadecimal, string expectedResult)
     {
-        var output = _service.ConvertHexToBinary(hexadecimal);
+        var output = HexadecimalConverterService.ConvertHexToBinary(hexadecimal);
         Assert.Equal(expectedResult, output);
     }
 }
