@@ -1,10 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net.NetworkInformation;
-using System.Text;
+﻿using System.Text;
 
 namespace DaySixteen.Services;
 
-public class PacketParsingService : IPacketParsingService
+public class PacketParsingService
 {
     public static int GetPacketType(string binary)
     {
@@ -38,7 +36,7 @@ public class PacketParsingService : IPacketParsingService
         var literalValues = binary.Substring(6).ToCharArray().Chunk(5);
         foreach (var literalValue in literalValues.Where(x => x.Length == 5))
         {
-            counter += string.Join("",literalValue)[1..].ToString();
+            counter += string.Join("",literalValue)[1..];
             if (literalValue[0] == 0)
                 return Convert.ToInt32(counter,2);
         }
@@ -51,8 +49,7 @@ public class PacketParsingService : IPacketParsingService
         var remaining = binary;
         var subPackets = new List<Packet>();
 
-        for (var i = 0; i < 2000; i++)
-        if (remaining.Length > 7)
+        while (remaining.Length > 7)
         {
             var (packet, newRemaining) = GetFirstPacketRemaining(remaining);
             remaining = newRemaining;
@@ -96,7 +93,7 @@ public class PacketParsingService : IPacketParsingService
                 return (new Packet (firstPacket.ToString()), subpackets.Substring(firstPacket.Length));
             }
         }
-        return (null, "");
+        return (null, "")!;
     }
 
     public static (Packet literal, string remaining) GetFirstPacketForTypeZeroAndRemaining(string subpackets)
@@ -113,20 +110,20 @@ public class PacketParsingService : IPacketParsingService
         {
             if (GetPacketType(content) == 4)
             {
-                var (literal, remaining) = GetFirstPacketForLiteralAndRemaining(content);
+                var (_, remaining) = GetFirstPacketForLiteralAndRemaining(content);
                 content = remaining;
                 continue;
             }
 
             if (GetLengthTypeId(content) == 0)
             {
-                var (literal, remaining) = GetFirstPacketForTypeZeroAndRemaining(content);
+                var (_, remaining) = GetFirstPacketForTypeZeroAndRemaining(content);
                 content = remaining;
                 continue;
             }
             if (GetLengthTypeId(content) == 1)
             {
-                var (literal, remaining) = GetFirstPacketForTypeOneAndRemaining(content);
+                var (_, remaining) = GetFirstPacketForTypeOneAndRemaining(content);
                 content = remaining;
                 continue;
             }

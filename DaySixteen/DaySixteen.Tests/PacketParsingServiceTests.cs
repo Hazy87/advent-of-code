@@ -1,17 +1,10 @@
-using System.Collections.Generic;
 using DaySixteen.Services;
-using Microsoft.VisualBasic;
 using Xunit;
 
 namespace DaySixteen.Tests;
 
 public class PacketParsingServiceTests
 {
-
-    public PacketParsingServiceTests()
-    {
-    }
-
     [Theory]
     [InlineData("110100101111111000101000", 6)]
     [InlineData("00111000000000000110111101000101001010010001001000000000", 1)]
@@ -65,24 +58,7 @@ public class PacketParsingServiceTests
         Assert.Equal(expectedVersion, version);
     }
 
-    [Theory]
-    [InlineData("00111000000000000110111101000101001010010001001000000000", 2)]
-    [InlineData("11101110000000001101010000001100100000100011000001100000", 3)]
-    public void GetSubPackets_Count(string binary, int expectedCount)
-    {
-        var version = PacketParsingService.GetSubPackets(binary);
-        Assert.Equal(expectedCount, version.Count);
-    }
-
-    [Theory]
-    [InlineData("00111000000000000110111101000101001010010001001000000000", 4)]
-    [InlineData("11101110000000001101010100001100100000100011000001100000", 5)]
-    public void GetSubPackets_TypeId(string binary, int expectedCount)
-    {
-        var version = PacketParsingService.GetSubPackets(binary);
-        Assert.Equal(expectedCount, version[0].PacketType);
-    }
-
+    
     [Theory]
     [InlineData("0001000101010110001011", "00010001010", "10110001011")]
     public void GetFirstLiteral(string binary, string expected, string expectedRemaining)

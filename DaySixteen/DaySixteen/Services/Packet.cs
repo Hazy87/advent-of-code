@@ -25,7 +25,7 @@ public class Packet
         return PacketParsingService.GetLiteralValueFromPacket(Binary);
     }}
 
-    private List<Packet>? _subPackets = null;
+    private List<Packet>? _subPackets;
     public List<Packet>? SubPackets
     {
         get
@@ -34,11 +34,7 @@ public class Packet
                 return null;
             if (_subPackets == null)
             {
-                if (LengthType == 0)
-                    _subPackets = PacketParsingService.GetSubPackets(Binary.Substring(22));
-                else
-                    _subPackets = PacketParsingService.GetSubPackets(Binary.Substring(18));
-
+                _subPackets = PacketParsingService.GetSubPackets(LengthType == 0 ? Binary.Substring(22) : Binary.Substring(18));
             }
 
             return _subPackets;

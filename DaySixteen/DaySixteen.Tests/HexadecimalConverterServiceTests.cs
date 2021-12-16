@@ -5,11 +5,9 @@ namespace DaySixteen.Tests;
 
 public class HexadecimalConverterServiceTests
 {
-    private readonly HexadecimalConverterService _service;
-
     public HexadecimalConverterServiceTests()
     {
-        _service = new HexadecimalConverterService();
+        new HexadecimalConverterService();
     }
     [Theory]
     [InlineData("D2FE28", "110100101111111000101000")]

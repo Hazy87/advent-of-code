@@ -1,6 +1,4 @@
-﻿using DaySixteen.Interfaces;
-
-namespace DaySixteen.Services;
+﻿namespace DaySixteen.Services;
 
 public class InputService :IInputService
 {

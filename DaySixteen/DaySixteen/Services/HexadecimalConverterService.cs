@@ -2,7 +2,7 @@
 
 namespace DaySixteen.Services;
 
-public class HexadecimalConverterService : IHexadecimalConverterService
+public class HexadecimalConverterService
 {
     public static string ConvertHexToBinary(string hexadecimal)
     {

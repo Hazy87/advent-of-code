@@ -4,8 +4,6 @@ using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
         services.AddSingleton<IProcessRunner, ProcessRunner>()
             .AddSingleton<IInputService, InputService>()
-            .AddSingleton<IHexadecimalConverterService, HexadecimalConverterService>()
-            .AddSingleton<IPacketParsingService, PacketParsingService>()
     ).Build();
 var runner = host.Services.GetService<IProcessRunner>();
 
