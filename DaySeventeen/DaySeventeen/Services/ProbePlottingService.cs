@@ -27,7 +27,33 @@ public class ProbePlottingService : IProbePlottingService
         return false;
 
     }
+    public bool SuccessFulShot(int xVelocity, int yVelocity, Input input)
+    {
+        var highestPointThisRun = 0;
+        var currentXvelocity = xVelocity;
+        var currentYVelocity = yVelocity;
+        var currentX = 0;
+        var currentY = 0;
+        while (!HasOverShotTrench(input, currentX, currentY))
+        {
+            //Console.WriteLine($"X : {currentX}, Y : {currentY}");
+            if (IsIntrench(input, currentX, currentY))
+            {
+                return true;
+            }
 
+            var (newXPosition, newYPosition, newXVelocity, newYVelocity) =
+                PlotStep(currentX, currentY, currentXvelocity, currentYVelocity);
+            if (newYPosition > highestPointThisRun)
+                highestPointThisRun = newYPosition;
+            currentY = newYPosition;
+            currentX = newXPosition;
+            currentYVelocity = newYVelocity;
+            currentXvelocity = newXVelocity;
+        }
+
+        return false;
+    }
     public int? HighestPoint(int xVelocity, int yVelocity, Input input)
     {
         int? highestPoint = null;

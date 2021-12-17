@@ -6,4 +6,5 @@ public interface IProbePlottingService
     bool HasOverShotTrench(Input input, int x, int y);
     (int xPosition, int yPosition, int xVelocity, int yVelocity) PlotStep(int currentXPosition, int currentYPosition, int xVelocity, int yVelocity);
     int? HighestPoint(int xVelocity, int yVelocity, Input input);
+    bool SuccessFulShot(int xVelocity, int yVelocity, Input input);
 }

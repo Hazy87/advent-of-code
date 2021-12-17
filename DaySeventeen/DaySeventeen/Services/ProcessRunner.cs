@@ -18,8 +18,8 @@ public class ProcessRunner : IProcessRunner
         var input = _inputService.GetLines();
         var overshotX = false;
         var highestPoint =  0;
-        ParallelFor(input, highestPoint);
-        Console.WriteLine($"done { highestPoint}");
+        var counter = ParallelFor(input, highestPoint);
+        Console.WriteLine($"done { highestPoint} -- {counter}");
     }
 
     private void NoneParallel(Input input, int highestPoint)
@@ -37,12 +37,15 @@ public class ProcessRunner : IProcessRunner
         }
     }
 
-    private void ParallelFor(Input input, int highestPoint)
+    private int ParallelFor(Input input, int highestPoint)
     {
-        Parallel.For(0, 2000, new ParallelOptions() { MaxDegreeOfParallelism = 24 }, yVelocity =>
+        var counter = 0;
+        Parallel.For(-10000, 10000, new ParallelOptions() { MaxDegreeOfParallelism = 24 }, yVelocity =>
         {
-            Parallel.For(0, input.MaxX, new ParallelOptions() { MaxDegreeOfParallelism = 24 }, xVelocity =>
+            Parallel.For(0, input.MaxX + 1, new ParallelOptions() { MaxDegreeOfParallelism = 24 }, xVelocity =>
             {
+                if (_probePlottingService.SuccessFulShot(xVelocity, yVelocity, input))
+                    Interlocked.Increment(ref counter);
                 var findHighestPoint = _probePlottingService.HighestPoint(xVelocity, yVelocity, input);
                 if (findHighestPoint.HasValue && findHighestPoint.Value > highestPoint)
                 {
@@ -54,5 +57,6 @@ public class ProcessRunner : IProcessRunner
             });
            
         });
+        return counter;
     }
 }
